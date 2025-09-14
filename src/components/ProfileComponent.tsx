@@ -3,15 +3,18 @@
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
+import { useSelector } from "react-redux"
+import { RootState } from "../app/lib/store/store"
 
 export default function ProfileComponent(){
 
-    const userInfo = {
-        Username : "James Dean",
-        Password : "Admin123",
-        Role : "User"
-    }
+    const profileInfo = useSelector((state : RootState) => state.profile)
 
+        const userInfo = {
+        Username : profileInfo.username,
+        Password : "*********",
+        Role : profileInfo.role
+    }
     return (
         <div className="h-full w-full flex flex-col justify-center items-center gap-8 border">
             <h1 className="text-xl font-semibold">User Profile</h1>

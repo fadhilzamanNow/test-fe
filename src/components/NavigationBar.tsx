@@ -3,7 +3,7 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import Image from "next/image";
 import logo from "@/public/logo.svg";
 import mobileLogo from "@/public/loginBoxTitle.svg";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
 import {
   DropdownMenu,
@@ -24,14 +24,37 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 
+import { RootState } from "../app/lib/store/store";
+import { useDispatch, useSelector } from "react-redux";
+import { clearProfile } from "../app/lib/store/profileSlice";
+import { useEffect } from "react";
+
 export default function NavigationBar() {
+    const router = useRouter()
+
+    const dispatch = useDispatch();
+    const profileInfo = useSelector((state : RootState) => state.profile)
+    //const router = useRouter();
+    function handleLogout(){
+      dispatch(clearProfile())
+      localStorage.removeItem("authToken")
+      router.push("/login")
+    }
+
+    useEffect(() => {
+      if(!localStorage.getItem("authToken")){
+        router.push("/login")
+      }
+    })
+
+
   const path = usePathname();
   console.log("isi path : ", path)
   return (
-    <nav className={`w-full h-16 sm:h-24 flex justify-between items-center px-4 bg-white sm:bg-white/0 ${path !== "/" && 'border-b border-b-slate-200'} sm:px-15`}>
+    <nav className={`w-full h-16 sm:h-24 flex justify-between items-center px-4 bg-white sm:bg-white/0 ${path !== "/" && 'border-b border-b-slate-200'} sm:px-15`} onClick={() => console.log(profileInfo)}>
       <Link href="/">
         <Image
-          src={path === "/profiles" ? logo : mobileLogo}
+          src={path === "/" ?  logo : mobileLogo}
           alt="Box Title"
           className="!text-white hidden sm:block"
         />
@@ -45,12 +68,12 @@ export default function NavigationBar() {
         <DropdownMenuTrigger>
           <div className="flex gap-2 items-center">
             <Avatar className="flex justify-center items-center size-8 bg-blue-200 text-blue-900">
-              <AvatarFallback>J</AvatarFallback>
+              <AvatarFallback>{profileInfo.username?.slice(1,2).toUpperCase()}</AvatarFallback>
             </Avatar>
             <span
               className={`hidden sm:block ${path === "/profiles" && "underline"}`}
             >
-              James Dean
+              {profileInfo.username}
             </span>
           </div>
         </DropdownMenuTrigger>
@@ -83,11 +106,9 @@ export default function NavigationBar() {
                     Cancel
                   </Button>
                 </DialogClose>
-                <Link href="/login">
-                  <Button className="bg-blue-600 text-white h-10 w-20 hover:bg-blue-600/80">
+                  <Button className="bg-blue-600 text-white h-10 w-20 hover:bg-blue-600/80" onClick={() => handleLogout()}>
                     Logout
                   </Button>
-                </Link>
               </DialogFooter>
             </DialogContent>
           </Dialog>

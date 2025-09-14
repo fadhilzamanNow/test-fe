@@ -7,4 +7,10 @@ const api = axios.create({
     }
 });
 
+api.interceptors.request.use((config) => {
+    config.headers.Authorization = `Bearer ${localStorage.getItem("authToken")}`
+
+    return config;
+})
+
 export default api;

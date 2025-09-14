@@ -17,13 +17,16 @@ import Footer from "../components/Footer";
 import mobileLogo from "@/public/loginBoxTitle.svg"
 import NavigationBar from "../components/NavigationBar";
 import Link from "next/link";
-export default function Home() {
+import { StoreProvider } from "./StoreProvider";
+
+export default function Page() {
   const [searchVal, setSearchVal] = useState<string>("");
   const [articles, setArticles] = useState<ArticlesType[]>([])
   const [currentPage, setCurrentPage] = useState<ArticleResponse['page']>(1);
   const [totalItem, setTotalItem] = useState<ArticleResponse['total']>(1);
   const [categories, setCategories] = useState<CategoryType[]>([])
   const [chooseCategory, setChooseCategory] = useState<string>("");
+
 
   async function getAllArticlesCategories(){
     try{
@@ -82,6 +85,7 @@ export default function Home() {
 
       timeoutId = setTimeout(() => {
         cb(data)
+        setCurrentPage(1)
       }, 500)
       
     }
@@ -115,15 +119,20 @@ export default function Home() {
         />
         <div className="absolute inset-0 bg-[#2563EBDB]/86">
         <div className="relative w-full h-full text-white">
-        <NavigationBar />
-        <div className="w-full h-101 flex flex-col justify-center items-center gap-3 overflow-y-hidden" onClick={() => console.log(categories)}>
+        <StoreProvider>
+          <NavigationBar/>
+        </StoreProvider>
+        <div className="w-full h-101 flex flex-col justify-center items-center gap-3 overflow-y-hidden">
           <span className="font-bold text-sm sm:text-base">Blog Genzet</span>
           <h1 className="font-bold text-center text-4xl sm:text-5xl" >The Journal :  Design Resouces,</h1>
           <h1 className="font-bold text-center text-4xl sm:text-5xl">Interviews, and Industry News</h1>
           <h3 className="text-xl text-center sm:text-2xl">Your daily dose of design insights!</h3>
           <div className="flex flex-col sm:flex-row justify-center items-center gap-7 bg-blue-500 rounded-xl mx-4 p-2 text-black">
             
-            <Select onValueChange={(catId) => setChooseCategory(catId) }   defaultValue="" >
+            <Select onValueChange={(catId) => {
+              setChooseCategory(catId) 
+              setCurrentPage(1)
+            }}   defaultValue="" >
               <SelectTrigger className="w-full sm:w-45 bg-white">
                 <SelectValue placeholder="Select category" />
               </SelectTrigger>
