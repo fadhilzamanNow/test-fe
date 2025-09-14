@@ -15,6 +15,7 @@ import { CategoryType, getCategories } from "./lib/categories";
 import PagePagination from "../components/PagePagination";
 import Footer from "../components/Footer";
 import mobileLogo from "@/public/loginBoxTitle.svg"
+import NavigationBar from "../components/NavigationBar";
 export default function Home() {
   const [isSearch,setSearch] = useState<boolean>(false);
   const [searchVal, setSearchVal] = useState<string>("");
@@ -97,24 +98,7 @@ export default function Home() {
         />
         <div className="absolute inset-0 bg-[#2563EBDB]/86">
         <div className="relative w-full h-full text-white">
-        <nav className="w-full h-16 sm:h-24 flex justify-between items-center px-4 bg-white sm:bg-white/0">
-          <Image 
-          src={logo}
-          alt="Box Title"
-          className="!text-white hidden sm:block"
-          />
-          <Image 
-          src={mobileLogo}
-          alt="Box Title"
-          className="!text-white block sm:hidden"
-          />
-          <div className="flex gap-2 items-center">
-          <Avatar className="flex justify-center items-center size-8 bg-blue-200 text-blue-900" >
-            <AvatarFallback>J</AvatarFallback>
-          </Avatar>
-          <span className="hidden sm:block">James Dean</span>
-          </div>
-        </nav>
+        <NavigationBar />
         <div className="w-full h-101 flex flex-col justify-center items-center gap-3 overflow-y-hidden">
           <span className="font-bold text-sm sm:text-base">Blog Genzet</span>
           <h1 className="font-bold text-center text-4xl sm:text-5xl" >The Journal :  Design Resouces,</h1>
