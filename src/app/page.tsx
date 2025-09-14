@@ -1,103 +1,169 @@
+'use client'
+
 import Image from "next/image";
-
+import hero from "@/public/heroUser.jpg"
+import logo from "@/public/logo.svg"
+import { Avatar } from "@/components/ui/avatar";
+import { AvatarFallback } from "@radix-ui/react-avatar";
+import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Input } from "../components/ui/input";
+import { LoaderCircle, Search } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
+import { ArticleResponse, ArticlesType, getArticles } from "./lib/articles";
+import ArticleCard from "../components/ArticleCard";
+import { CategoryType, getCategories } from "./lib/categories";
+import PagePagination from "../components/PagePagination";
+import Footer from "../components/Footer";
+import mobileLogo from "@/public/loginBoxTitle.svg"
 export default function Home() {
-  return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantlyy.
-          </li>
-        </ol>
+  const [isSearch,setSearch] = useState<boolean>(false);
+  const [searchVal, setSearchVal] = useState<string>("");
+  const [articles, setArticles] = useState<ArticlesType[]>([])
+  const [currentPage, setCurrentPage] = useState<ArticleResponse['page']>(1);
+  const [totalItem, setTotalItem] = useState<ArticleResponse['total']>(1);
+  const [categories, setCategories] = useState<CategoryType[]>([])
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+  async function getAllArticlesCategories(){
+    try{
+      const articlesData = await getArticles();
+      const categoriesData = await getCategories();
+
+
+      if(articlesData && categoriesData){
+
+      const filterArticles = articlesData.data.map((a) => {
+        const categoryData = categoriesData.data.find((c) => c.id === a.categoryId)
+        return {
+          ...a,
+          ...(categoryData && {categoryName : categoryData.name})
+        }
+      })
+
+      setArticles(filterArticles)
+      setCurrentPage(articlesData.page)
+      setTotalItem(articlesData.total)
+      setCategories(categoriesData.data)
+
+
+      console.log("isi articles : ", filterArticles)
+     
+
+      }
+    }catch(err){
+      console.log("There is error : ", err)
+    }
+    
+  }
+
+  
+
+  useEffect(() => {
+    getAllArticlesCategories();
+  },[])
+
+  function debounce(cb : (cb : string) => void){
+    let timeoutId : ReturnType<typeof setTimeout>;
+    return function(data : string){
+      clearTimeout(timeoutId);
+
+      timeoutId = setTimeout(() => {
+        cb(data)
+        setSearch(true)
+      }, 500)
+      
+    }
+  }
+
+  async function logInput(data : string){
+    console.log(data)
+  }
+
+  const debounceInput = debounce(logInput)
+
+  const handleChange = (e : React.FormEvent<HTMLInputElement>) => {
+    setSearch(false)
+    debounceInput((e.target as HTMLInputElement).value);
+  }
+
+
+
+  return (
+    <div className="min-h-screen flex flex-col gap-8">
+      <div className="w-full h-125 relative">
+        <Image 
+        src={hero}
+        alt="Hero"
+        className="w-full h-full object-cover "
+        />
+        <div className="absolute inset-0 bg-[#2563EBDB]/86">
+        <div className="relative w-full h-full text-white">
+        <nav className="w-full h-16 sm:h-24 flex justify-between items-center px-4 bg-white sm:bg-white/0">
+          <Image 
+          src={logo}
+          alt="Box Title"
+          className="!text-white hidden sm:block"
+          />
+          <Image 
+          src={mobileLogo}
+          alt="Box Title"
+          className="!text-white block sm:hidden"
+          />
+          <div className="flex gap-2 items-center">
+          <Avatar className="flex justify-center items-center size-8 bg-blue-200 text-blue-900" >
+            <AvatarFallback>J</AvatarFallback>
+          </Avatar>
+          <span className="hidden sm:block">James Dean</span>
+          </div>
+        </nav>
+        <div className="w-full h-101 flex flex-col justify-center items-center gap-3 overflow-y-hidden">
+          <span className="font-bold text-sm sm:text-base">Blog Genzet</span>
+          <h1 className="font-bold text-center text-4xl sm:text-5xl" >The Journal :  Design Resouces,</h1>
+          <h1 className="font-bold text-center text-4xl sm:text-5xl">Interviews, and Industry News</h1>
+          <h3 className="text-xl text-center sm:text-2xl">Your daily dose of design insights!</h3>
+          <div className="flex flex-col sm:flex-row justify-center items-center gap-7 bg-blue-500 rounded-xl mx-4 p-2">
+            <Select >
+              <SelectTrigger className="w-full sm:w-45 bg-white">
+                <SelectValue placeholder="Select category" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  {categories.map((c) => (
+                    <SelectItem value={c.name}>{c.name}</SelectItem>
+                  ))}
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+            <div className="w-full sm:w-100 h-10 relative text-slate-400">
+            <Input placeholder="Search Articles" className="w-full h-full bg-white pl-9 text-sm" onChange={(e) => handleChange(e)} />
+            <div>
+
+            </div  >
+            <div className="absolute top-1/2 -translate-y-1/2 left-3">
+            {isSearch ?  <LoaderCircle size={16} className="animate-spin" /> : <Search size={16} />}
+            
+            </div>
+           
+            </div>
+          </div>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+
+
+        
+        </div>
+        </div>
+      </div>
+      <div className="h-full w-full bg-white px-20 py-10.5 ">
+        <span className="text-base">Showing: 20 of 240 entries</span>
+        <div className="h-full w-full grid grid-cols:1 md:grid-cols-2 lg:grid-cols-3 gap-4 ">
+        {articles.map((article)=> (
+          <ArticleCard key={article.id}  test="123" article={article} />
+        ))}
+        </div>
+      </div>
+      <div className="w-full flex justify-center items-center">
+        <PagePagination totalItem={totalItem} currentPage={currentPage} />
+      </div>
+      <Footer />
     </div>
   );
 }
