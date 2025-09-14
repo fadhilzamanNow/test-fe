@@ -20,7 +20,7 @@ export default function PagePagination({currentPage, totalItem} : PagePagination
         </PaginationItem>
         {
             Array.from({length : totalPage}, (_,i) => (
-                <PaginationItem>
+                <PaginationItem key={i+1}>
                     <PaginationLink isActive={i+1 === 1 ? true : false}>{i+1}</PaginationLink>
                 </PaginationItem>
             ))
