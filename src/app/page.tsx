@@ -18,16 +18,16 @@ import mobileLogo from "@/public/loginBoxTitle.svg"
 import NavigationBar from "../components/NavigationBar";
 import Link from "next/link";
 export default function Home() {
-  const [isSearch,setSearch] = useState<boolean>(false);
   const [searchVal, setSearchVal] = useState<string>("");
   const [articles, setArticles] = useState<ArticlesType[]>([])
   const [currentPage, setCurrentPage] = useState<ArticleResponse['page']>(1);
   const [totalItem, setTotalItem] = useState<ArticleResponse['total']>(1);
   const [categories, setCategories] = useState<CategoryType[]>([])
+  const [chooseCategory, setChooseCategory] = useState<string>("");
 
   async function getAllArticlesCategories(){
     try{
-      const articlesData = await getArticles();
+      const articlesData = await getArticles(searchVal,currentPage, chooseCategory);
       const categoriesData = await getCategories();
 
 
@@ -41,14 +41,25 @@ export default function Home() {
         }
       })
 
+      const filterCategories = categoriesData.data.map((c) => {
+        if(c.id === ""){
+          return {
+            ...c,
+            id : "-"
+          }
+        } 
+        return {
+          ...c
+        }
+      })
+
       setArticles(filterArticles)
       setCurrentPage(articlesData.page)
       setTotalItem(articlesData.total)
-      setCategories(categoriesData.data)
+      setCategories(filterCategories)
 
 
-      console.log("isi articles : ", filterArticles)
-     
+      
 
       }
     }catch(err){
@@ -61,7 +72,8 @@ export default function Home() {
 
   useEffect(() => {
     getAllArticlesCategories();
-  },[])
+    console.log("isi search val : ", chooseCategory)
+  },[searchVal, currentPage, chooseCategory])
 
   function debounce(cb : (cb : string) => void){
     let timeoutId : ReturnType<typeof setTimeout>;
@@ -70,22 +82,26 @@ export default function Home() {
 
       timeoutId = setTimeout(() => {
         cb(data)
-        setSearch(true)
       }, 500)
       
     }
   }
 
   async function logInput(data : string){
-    console.log(data)
+    setSearchVal(data)
   }
 
   const debounceInput = debounce(logInput)
 
   const handleChange = (e : React.FormEvent<HTMLInputElement>) => {
-    setSearch(false)
     debounceInput((e.target as HTMLInputElement).value);
   }
+
+  const handleCurrentPage = (a : number) => {
+    setCurrentPage(a)
+  }
+
+  
 
 
 
@@ -100,20 +116,21 @@ export default function Home() {
         <div className="absolute inset-0 bg-[#2563EBDB]/86">
         <div className="relative w-full h-full text-white">
         <NavigationBar />
-        <div className="w-full h-101 flex flex-col justify-center items-center gap-3 overflow-y-hidden">
+        <div className="w-full h-101 flex flex-col justify-center items-center gap-3 overflow-y-hidden" onClick={() => console.log(categories)}>
           <span className="font-bold text-sm sm:text-base">Blog Genzet</span>
           <h1 className="font-bold text-center text-4xl sm:text-5xl" >The Journal :  Design Resouces,</h1>
           <h1 className="font-bold text-center text-4xl sm:text-5xl">Interviews, and Industry News</h1>
           <h3 className="text-xl text-center sm:text-2xl">Your daily dose of design insights!</h3>
-          <div className="flex flex-col sm:flex-row justify-center items-center gap-7 bg-blue-500 rounded-xl mx-4 p-2">
-            <Select >
+          <div className="flex flex-col sm:flex-row justify-center items-center gap-7 bg-blue-500 rounded-xl mx-4 p-2 text-black">
+            
+            <Select onValueChange={(catId) => setChooseCategory(catId) }   defaultValue="" >
               <SelectTrigger className="w-full sm:w-45 bg-white">
                 <SelectValue placeholder="Select category" />
               </SelectTrigger>
               <SelectContent>
                 <SelectGroup>
                   {categories.map((c) => (
-                    <SelectItem value={c.name}>{c.name}</SelectItem>
+                    <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>
                   ))}
                 </SelectGroup>
               </SelectContent>
@@ -124,7 +141,7 @@ export default function Home() {
 
             </div  >
             <div className="absolute top-1/2 -translate-y-1/2 left-3">
-            {isSearch ?  <LoaderCircle size={16} className="animate-spin" /> : <Search size={16} />}
+            <Search size={16} />
             
             </div>
            
@@ -141,14 +158,14 @@ export default function Home() {
         <span className="text-base">Showing: 20 of 240 entries</span>
         <div className="h-full w-full grid grid-cols-[repeat(auto-fit,minmax(386px,1fr))] gap-4 ">
         {articles.map((article)=> (
-          <Link href={`/article/${article.id}`}>
+          <Link key={article.id} href={`/article/${article.id}`}>
           <ArticleCard key={article.id}  test="123" article={article} />
           </Link>
         ))}
         </div>
       </div>
       <div className="w-full flex justify-center items-center">
-        <PagePagination totalItem={totalItem} currentPage={currentPage} />
+        <PagePagination totalItem={totalItem} currentPage={currentPage} handleCurrentPage={handleCurrentPage}/>
       </div>
       <Footer />
     </div>

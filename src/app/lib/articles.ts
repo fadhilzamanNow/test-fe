@@ -36,11 +36,9 @@ interface ArticleResponse {
     total : number
 }
 
-export async function getArticles() : Promise< ArticleResponse | void>{
+export async function getArticles(title : string = "", page : number = 1, category : string = "") : Promise< ArticleResponse | void>{
     try{
-        const response = await api.get("/articles")
-
-
+        const response = await api.get(`/articles?title=${title}&page=${page}&category=${category}`)
         return response.data;
     }catch(err){
         if(err instanceof AxiosError){
