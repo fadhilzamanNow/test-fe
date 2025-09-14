@@ -16,6 +16,7 @@ import PagePagination from "../components/PagePagination";
 import Footer from "../components/Footer";
 import mobileLogo from "@/public/loginBoxTitle.svg"
 import NavigationBar from "../components/NavigationBar";
+import Link from "next/link";
 export default function Home() {
   const [isSearch,setSearch] = useState<boolean>(false);
   const [searchVal, setSearchVal] = useState<string>("");
@@ -138,9 +139,11 @@ export default function Home() {
       </div>
       <div className="h-full w-full bg-white px-20 py-10.5 ">
         <span className="text-base">Showing: 20 of 240 entries</span>
-        <div className="h-full w-full grid grid-cols:1 md:grid-cols-2 lg:grid-cols-3 gap-4 ">
+        <div className="h-full w-full grid grid-cols-[repeat(auto-fit,minmax(386px,1fr))] gap-4 ">
         {articles.map((article)=> (
+          <Link href={`/article/${article.id}`}>
           <ArticleCard key={article.id}  test="123" article={article} />
+          </Link>
         ))}
         </div>
       </div>

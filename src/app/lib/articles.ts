@@ -49,4 +49,15 @@ export async function getArticles() : Promise< ArticleResponse | void>{
     }
 }
 
+export async function getArticle(id : string) : Promise< ArticlesType | void>{
+    try{
+        const response = await api.get(`/articles/${id}`)
+        return response.data;
+    }catch(err){
+        if(err instanceof AxiosError){
+            console.log(err.message)
+        }
+    }
+}
+
 export type {ArticlesType, ArticleResponse}
