@@ -58,4 +58,15 @@ export async function getArticle(id : string) : Promise< ArticlesType | void>{
     }
 }
 
+export async function deleteArticle(id : string){
+    try{
+        const response = await api.delete(`/articles/${id}`)
+        return response.data
+    }catch(err){
+        if(err instanceof AxiosError){
+            console.log(err.message)
+        }
+    }
+}
+
 export type {ArticlesType, ArticleResponse}

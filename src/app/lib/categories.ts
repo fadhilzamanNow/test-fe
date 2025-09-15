@@ -16,9 +16,9 @@ interface CategoryResponse {
     totalPages : number
 }
 
-export async function getCategories() : Promise< CategoryResponse | void>  {
+export async function getCategories(currentPage = 1, search = "") : Promise< CategoryResponse | void>  {
     try{
-        const response = await api.get("/categories")
+        const response = await api.get(`/categories?page=${currentPage}&search=${search}`)
         return response.data;
     }catch(err){
         if(err instanceof AxiosError){

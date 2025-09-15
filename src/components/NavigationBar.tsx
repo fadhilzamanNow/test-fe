@@ -31,6 +31,7 @@ import { useEffect } from "react";
 
 export default function NavigationBar() {
     const router = useRouter()
+    const path = usePathname();
 
     const dispatch = useDispatch();
     const profileInfo = useSelector((state : RootState) => state.profile)
@@ -45,10 +46,12 @@ export default function NavigationBar() {
       if(!localStorage.getItem("authToken")){
         router.push("/login")
       }
+      
     })
 
+   
 
-  const path = usePathname();
+
   console.log("isi path : ", path)
   return (
     <nav className={`w-full h-16 sm:h-24 flex justify-between items-center px-4 bg-white sm:bg-white/0 ${path !== "/" && 'border-b border-b-slate-200'} sm:px-15`} onClick={() => console.log(profileInfo)}>

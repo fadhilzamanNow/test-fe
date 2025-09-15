@@ -31,11 +31,13 @@ export default function AdminSidebar(){
     <Sidebar className="!bg-blue-600  ">
       <SidebarContent>
         <SidebarGroup>
-          <SidebarGroupLabel>
+          <SidebarGroupLabel >
+            <div className="h-24 flex items-center pl-2 ">
             <Image 
                 src={logo}
                 alt="logo"
             />
+            </div>
           </SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu className="mt-5">

@@ -8,15 +8,15 @@ import { Button } from "@/src/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import PagePagination from "@/src/components/PagePagination";
 import { CategoryType, getCategories } from "../app/lib/categories";
-import { ArticleResponse, ArticlesType, getArticles } from "../app/lib/articles";
+import { ArticleResponse, ArticlesType, deleteArticle, getArticles } from "../app/lib/articles";
 import { ListMode } from "../app/admin/articles/page";
+import DeleteDialogue from "./DeleteDialog";
 
 interface AdminListArticlesProps {
     handleChangeMode : (mode : ListMode) => void
 }
 
 export default function AdminListArticles({handleChangeMode} : AdminListArticlesProps){
-    const [isList,setIsList] = useState<boolean>(false);
 
     const [searchVal, setSearchVal] = useState<string>("");
     const [articles, setArticles] = useState<ArticlesType[]>([])
@@ -24,7 +24,7 @@ export default function AdminListArticles({handleChangeMode} : AdminListArticles
     const [totalItem, setTotalItem] = useState<ArticleResponse['total']>(1);
     const [categories, setCategories] = useState<CategoryType[]>([])
     const [chooseCategory, setChooseCategory] = useState<string>("");
-
+    const [isDeleting, setIsDeleting] = useState<boolean>(false);
 
     async function getAllArticlesCategories(){
         try{
@@ -63,15 +63,29 @@ export default function AdminListArticles({handleChangeMode} : AdminListArticles
           
     
           }
+
+
         }catch(err){
           console.log("There is error : ", err)
         }
       }
 
+      const handleDeletes = async (articleId : string) => {
+        await deleteArticle(articleId);
+        setIsDeleting(true)
+        //await deleteArticle(userId);
+
+      }
+
+
       useEffect(() => {
           getAllArticlesCategories();
           console.log("isi search val : ", chooseCategory)
-        },[searchVal, currentPage, chooseCategory])
+
+          if(isDeleting){
+            setIsDeleting(false)
+          }
+        },[searchVal, currentPage, chooseCategory, isDeleting])
       
         function debounce(cb : (cb : string) => void){
           let timeoutId : ReturnType<typeof setTimeout>;
@@ -101,6 +115,7 @@ export default function AdminListArticles({handleChangeMode} : AdminListArticles
         }
       
         const rowTitle = ["Thumbnails", "Title", "Category", "Created at", "Action"]
+
     return (
         <div className="w-full h-full  bg-white  border border-gray-50 rounded-xl flex flex-col">
             <span className="w-full h-18 flex items-center border-b boder-b-gray-50 pl-5 font-medium">Total Articles : {totalItem}</span>
@@ -158,7 +173,9 @@ export default function AdminListArticles({handleChangeMode} : AdminListArticles
             <div className="flex justify-center items-center gap-2">
                 <Button className="bg-blue-500 hover:bg-blue-500/80"><Play className="text-white"  /></Button>
                 <Button className="bg-yellow-400 hover:bg-yellow-400/80"><Bolt className="text-white" /></Button>
+                <DeleteDialogue handleDelete={handleDeletes} articleId={v.id} >
                 <Button className="bg-red-500 hover:bg-red-500/80"><Trash className="text-white" /></Button>
+                </DeleteDialogue>
             </div>
           </TableCell>
         </TableRow>
