@@ -52,7 +52,8 @@ export default function NavigationBar() {
   console.log("isi path : ", path)
   return (
     <nav className={`w-full h-16 sm:h-24 flex justify-between items-center px-4 bg-white sm:bg-white/0 ${path !== "/" && 'border-b border-b-slate-200'} sm:px-15`} onClick={() => console.log(profileInfo)}>
-      <Link href="/">
+      {(path !== "/admin/articles" && path !=="/admin/categories") && 
+       <Link href="/">
         <Image
           src={path === "/" ?  logo : mobileLogo}
           alt="Box Title"
@@ -64,6 +65,18 @@ export default function NavigationBar() {
           className="!text-white block sm:hidden"
         />
       </Link>
+      }
+      {
+        path === "/admin/articles" &&
+        <h1 className="text-xl font-semibold">Articles</h1>
+      }
+      {
+        path === "/admin/categories" &&
+        <h1 className="text-xl font-semibold">Category</h1>
+      }
+
+
+     
       <DropdownMenu>
         <DropdownMenuTrigger>
           <div className="flex gap-2 items-center">
