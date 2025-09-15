@@ -54,7 +54,7 @@ import {
   ContextMenuItem,
   ContextMenuTrigger,
 } from "@/components/ui/context-menu";
-import { cn } from "@/lib/utils";
+import { cn } from "@/src/lib/utils";
 
 const draggingAtom = atom(false);
 const scrollXAtom = atom(0);
