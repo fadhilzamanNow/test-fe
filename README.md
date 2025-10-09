@@ -1,36 +1,61 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
-## Getting Started
+## Library
 
-First, run the development server:
+1. Redux Toolkit (State Management
+2. Zod (Validator)
+3. React Hook Form (Form utility) 
+4. Lucide-Icon (Icon)
+5. Shadcn (Component Library)
+6. TipTap (Rich Text Editor Library)
+7. Axios (HTTP Library)
+8. TailwindCSS (Utility CSS)
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## Progress
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### [PUBLIC Route]
+- /login
+- /register
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+1. Slicing Register ✅
+2. Slicing Login ✅
+3. Logic Register ✅
+4. Logic Slicing ✅
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### [USER Route]
+- /
+- /article/[articleId]
+- /profiles
 
-## Learn More
 
-To learn more about Next.js, take a look at the following resources:
+1. Slicing All Articles ✅
+2. Slicing Detail Articles ✅
+3. Slicing Profiles ✅
+4. Logic All Articles ✅
+5. Logic Detail Articles ✅
+6. Logic Profiles ✅
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### [ADMIN Route]
+- /admin/articles
+- /admin/categories
 
-## Deploy on Vercel
+1. Slicing All Articles ✅
+2. Slicing All Categories ✅
+3. Logic All Articles ❌ (not finished yet)
+4. Logic All Categories ❌ (not finished yet)
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### [PRIVATE Route]
+1. Implement Logic for Private Route based on Role ❌ (not finished yet)
+
+### [ANIMATIONS & RESPONSIVE]
+
+1. Implement Loading State ❌
+2. Responsive ✅
+
+### Notes : 
+1. So the things left are about implementing private routes based on role, i havent implement that yet. So, eventhough if not yet login can access any those private route, but as long 
+as we login as a user or admin we can access to either route.
+
+2. I havent implemented any loading State, so the animations, especially when fetching data feel rough
+
