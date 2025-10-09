@@ -56,11 +56,8 @@ const RichTextEditor = () => {
     return null;
   }
 
- 
-
   return (
     <div className="border rounded-lg">
-
       <div className="flex flex-wrap items-center gap-1 border-b p-2">
         <Button
           variant="ghost"
@@ -86,7 +83,7 @@ const RichTextEditor = () => {
           size="sm"
           pressed={editor.isActive("bold")}
           onPressedChange={() => editor.chain().focus().toggleBold().run()}
-          aria-label="Toggle bold" 
+          aria-label="Toggle bold"
         >
           <Bold className="h-4 w-4" />
         </Toggle>
@@ -110,7 +107,6 @@ const RichTextEditor = () => {
         </Toggle>
 
         <Separator orientation="vertical" className="h-8" />
-
 
         <Toggle
           size="sm"
@@ -157,9 +153,7 @@ const RichTextEditor = () => {
         </Toggle>
       </div>
 
-
       <EditorContent editor={editor} />
-
 
       <div className="border-t p-2 text-xs text-slate-500 flex items-center">
         0 Words
